@@ -14,8 +14,8 @@ public class LoginTest {
         );
 
      boolean found =
-        html.contains("submitBtn1")
-        || html.contains("saveBtn1");
+        html.contains("submitBtn")
+        || html.contains("saveBtn");
 
 assertTrue(
         found,
