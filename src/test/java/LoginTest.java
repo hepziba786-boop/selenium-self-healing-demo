@@ -18,8 +18,8 @@ public class LoginTest {
         || html.contains("saveBtn");
 
 assertTrue(
-        found,
-        "Button not found"
+    html.contains("submitBtn"),
+    "submitBtn not found"
 );
     }
 }
