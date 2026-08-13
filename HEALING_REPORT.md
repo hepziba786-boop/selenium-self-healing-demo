@@ -6,13 +6,19 @@ Toolchain: Maven + JUnit 5 + Selenium
 
 ## 1. Regression Suite Run
 
-Local execution on 2026-08-13 failed during browser startup.
+Latest local execution on 2026-08-13 failed during browser startup.
 
 Observed failure:
 - Test: LoginTest#verifySubmitButtonThroughTheBrowser
 - Error type: SessionNotCreatedException
 - Root symptom: Chrome instance exited before creating a WebDriver session
 - Result: Tests run: 1, Failures: 0, Errors: 1, Skipped: 0
+
+Latest command:
+
+```bash
+cd /workspaces/selenium-self-healing-demo && mvn clean test -q
+```
 
 ## 2. Investigation
 
