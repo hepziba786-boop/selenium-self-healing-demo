@@ -1,22 +1,24 @@
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LoginTest {
+public class LoginTest extends BaseUiTest {
 
     @Test
-    void verifyButtonExists() throws Exception {
+    void verifySubmitButtonThroughTheBrowser() {
+        DemoAppPage page = openDemoApp();
 
-        String html = Files.readString(
-                Paths.get("app/index.html")
+        assertAll(
+                () -> assertEquals("Demo App", page.getHeadingText()),
+                () -> assertTrue(page.isSubmitButtonDisplayed(), "submit button should be visible"),
+                () -> assertTrue(page.isSubmitButtonEnabled(), "submit button should be enabled"),
+                () -> assertEquals("Submit", page.getSubmitButtonText())
         );
 
-        assertTrue(
-                html.contains("submitBtn"),
-                "submitBtn not found"
-        );
+        page.clickSubmit();
+
+        assertTrue(page.isSubmitButtonFocused(), "submit button should receive focus after click");
     }
 }

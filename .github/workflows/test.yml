@@ -17,4 +17,8 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - run: mvn test
+      - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - run: mvn -B test
