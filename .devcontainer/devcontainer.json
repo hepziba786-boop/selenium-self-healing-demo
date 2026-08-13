@@ -1,0 +1,5 @@
+{
+  "name": "selenium-self-healing-demo",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+  "postCreateCommand": "bash .devcontainer/install-chrome-deps.sh"
+}
