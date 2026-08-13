@@ -36,12 +36,9 @@ Updated files:
 
 Changes made:
 1. Removed brittle hard-coded Chrome and ChromeDriver path configuration.
-2. Added resilient startup logic:
-   - Try ChromeDriver first.
-   - If browser startup fails, fallback to HtmlUnitDriver for this demo test suite.
-3. Added HtmlUnit test dependency and aligned Selenium dependency versions for compatibility.
-4. Updated Selenium 3 timeout API usage:
-   - implicitlyWait(2, TimeUnit.SECONDS)
+2. Restored a single Selenium 4 dependency so ChromeOptions has a consistent runtime API.
+3. Kept Selenium Manager responsible for resolving the ChromeDriver on CI and developer machines.
+4. Retained the existing headless Chrome arguments required by the GitHub Actions runner.
 
 ## 4. Validation
 
@@ -51,12 +48,15 @@ Command executed:
 cd /workspaces/selenium-self-healing-demo && mvn clean test -q
 ```
 
-Result:
-- Tests run: 1
-- Failures: 0
-- Errors: 0
-- Skipped: 0
-- Status: PASSED
+CI failure reproduced from PR #4:
+- Error: NoSuchMethodError for ChromeOptions.addArguments
+- Cause: Selenium 4-shaped compiled code ran with Selenium 3 classes at runtime
+
+Local post-fix run:
+- Compilation succeeds with Selenium 4.24.0.
+- Test startup is blocked in this dev container because its Selenium-managed Chrome is missing Linux runtime libraries.
+
+The PR workflow installs Chrome on `ubuntu-latest`; its next run is the authoritative browser validation.
 
 ## 5. Notes
 
