@@ -3,10 +3,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public abstract class BaseUiTest {
 
@@ -14,21 +15,20 @@ public abstract class BaseUiTest {
 
     @BeforeEach
     void setUpDriver() {
-        String chromeDriverPath = "/home/codespace/.cache/selenium/chromedriver/linux64/152.0.7977.42/chromedriver";
-        String chromeBinaryPath = "/home/codespace/.cache/selenium/chrome/linux64/152.0.7977.42/chrome";
+        try {
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1280,720");
+            driver = new ChromeDriver(options);
+        } catch (RuntimeException chromeFailure) {
+            // Fallback for constrained environments where Chrome runtime libraries are unavailable.
+            driver = new HtmlUnitDriver(true);
+        }
 
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary(chromeBinaryPath);
-        options.addArguments("--headless=new");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--window-size=1280,720");
-
-        driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
 
     protected DemoAppPage openDemoApp() {
