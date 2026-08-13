@@ -1,7 +1,7 @@
 # Intelligent Regression Testing — Healing Report
 
 **Generated:** 2026-08-13  
-**Branch:** copilot/create-intelligent-regression-testing-agent  
+**Branch:** main  
 **Tool:** Maven + JUnit 5 + Selenium 4.24.0
 
 ---
@@ -14,7 +14,7 @@ Test: LoginTest#verifySubmitButtonThroughTheBrowser
 Status: PASSED
 ```
 
-All tests **PASSED**. No healing was required for this run.
+The suite is now passing after fixing the browser runtime configuration.
 
 ---
 
@@ -27,7 +27,7 @@ All tests **PASSED**. No healing was required for this run.
 <html>
 <body>
   <h1>Demo App</h1>
-  <button id="submitBtn" data-testid="submit-button" type="button">Submit</button>
+  <button id="saveBtn" data-testid="submit-button" type="button">Submit</button>
 </body>
 </html>
 ```
@@ -47,44 +47,42 @@ All tests **PASSED**. No healing was required for this run.
 
 | Element | HTML Attribute | Java Locator | Match |
 |---|---|---|---|
-| Submit button | `id="submitBtn"` | `By.id("submitBtn")` | ✅ |
+| Submit button | `id="saveBtn"` | `By.id("submitBtn")` | ❌ |
 | Submit button | `data-testid="submit-button"` | `By.cssSelector("[data-testid='submit-button']")` | ✅ |
 | Submit button | text `Submit` | `By.xpath("//button[normalize-space()='Submit']")` | ✅ |
 | Page heading | `<h1>Demo App</h1>` | `By.tagName("h1")` | ✅ |
 
-**No discrepancies detected** between HTML source and Selenium locators.
+The UI had changed from `id="submitBtn"` to `id="saveBtn"`, which broke the primary locator. The fallback selectors still matched and the page object design already supported self-healing.
 
 ---
 
 ## 4. Issue Identification
 
-**No issues found.** All locators in `DemoAppPage.java` accurately target the elements present in `app/index.html`.
+The initial regression was not a business-logic bug; it was an environment issue caused by Selenium launching the downloaded Chrome for Testing binary without the required Linux runtime libraries. In this container, Chrome exited before creating the session, producing `SessionNotCreatedException`.
 
-The `FallbackLocator` class provides resilience: if the primary `id` locator breaks (e.g. the `id` attribute is removed from the HTML), the test will automatically fall back to the `data-testid` CSS selector, then to the XPath by visible text.
+Once the browser runtime was installed and the tests were pointed at the local Chromium binary, the real UI mismatch was also visible: the submit button ID changed from `submitBtn` to `saveBtn`.
 
 ---
 
 ## 5. Fix Applied
 
-**No fix required** — tests passed without modification.
+1. Configured Selenium to use the installed system Chromium binary:
+   - `/usr/bin/chromium-browser`
+2. Explicitly set the ChromeDriver path:
+   - `/usr/bin/chromedriver`
+3. Kept the resilient fallback locator strategy in `DemoAppPage.java` so the selector remains robust.
+
+This allowed the browser to start and the test to use the correct fallback locator when the button ID changed.
 
 ---
 
-## 6. Self-Healing Architecture
+## 6. Validation
 
-```
-FallbackLocator
-├── Primary:    By.id("submitBtn")               ← most specific / fastest
-├── Fallback 1: By.cssSelector("[data-testid]")  ← stable test attribute
-└── Fallback 2: By.xpath("//button[text]")       ← most resilient to refactor
+```bash
+cd /workspaces/selenium-self-healing-demo && mvn test -q
 ```
 
-This layered locator strategy is the core of the self-healing mechanism. When the UI changes, the agent:
-
-1. Detects the `NoSuchElementException` from the primary locator.
-2. Silently retries with each fallback.
-3. Reports the first successful locator.
-4. If all fail, the test fails with a consolidated error listing all attempted locators.
+Result: all tests passed successfully.
 
 ---
 
@@ -92,19 +90,6 @@ This layered locator strategy is the core of the self-healing mechanism. When th
 
 | # | Recommendation |
 |---|---|
-| 1 | Keep `data-testid` attributes on all interactive elements in `app/index.html` — they act as a stable contract between developers and testers. |
-| 2 | Extend `FallbackLocator` to log which locator was used, so drift can be detected proactively before tests break. |
-| 3 | Add more tests (negative paths, error states) to increase regression coverage. |
-| 4 | Pin ChromeDriver version in CI to avoid the `CDP version mismatch` warning seen in logs. |
-
----
-
-## 8. Test Artifacts
-
-| Artifact | Path |
-|---|---|
-| Surefire TXT report | `target/surefire-reports/LoginTest.txt` |
-| Surefire XML report | `target/surefire-reports/TEST-LoginTest.xml` |
-| Page Object | `src/test/java/DemoAppPage.java` |
-| Test Class | `src/test/java/LoginTest.java` |
-| Healing report | `HEALING_REPORT.md` (this file) |
+| 1 | Keep `data-testid` attributes on interactive elements for stable automation hooks. |
+| 2 | Pin browser and driver tools in CI to the system-installed versions used by the environment. |
+| 3 | Keep fallback locators in page objects to absorb harmless UI renames without rewriting business tests. |
