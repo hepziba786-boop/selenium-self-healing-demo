@@ -1,17 +1,18 @@
 # Intelligent Regression Testing - Healing Report
 
 Generated: 2026-08-13
-Branch: main
+Branch: fix/selenium-runtime-fallback
 Toolchain: Maven + JUnit 5 + Selenium
 
 ## 1. Regression Suite Run
 
-Initial run failed.
+Local execution on 2026-08-13 failed during browser startup.
 
 Observed failure:
 - Test: LoginTest#verifySubmitButtonThroughTheBrowser
-- Error type: NoSuchDriverException, then SessionNotCreatedException
-- Root symptom: Chrome/ChromeDriver could not be launched reliably in this container
+- Error type: SessionNotCreatedException
+- Root symptom: Chrome instance exited before creating a WebDriver session
+- Result: Tests run: 1, Failures: 0, Errors: 1, Skipped: 0
 
 ## 2. Investigation
 
@@ -42,23 +43,24 @@ Changes made:
 
 ## 4. Validation
 
-Command executed:
+Command executed locally:
 
 ```bash
 cd /workspaces/selenium-self-healing-demo && mvn clean test -q
 ```
 
-CI failure reproduced from PR #4:
-- Error: NoSuchMethodError for ChromeOptions.addArguments
-- Cause: Selenium 4-shaped compiled code ran with Selenium 3 classes at runtime
+Local failure details:
+- ChromeDriver was resolved by Selenium Manager.
+- The Selenium-managed Chrome binary exited because required Linux runtime libraries are unavailable in this dev container.
+- No page interaction or locator assertion was reached.
 
-Local post-fix run:
-- Compilation succeeds with Selenium 4.24.0.
-- Test startup is blocked in this dev container because its Selenium-managed Chrome is missing Linux runtime libraries.
-
-The PR workflow installs Chrome on `ubuntu-latest`; its next run is the authoritative browser validation.
+PR validation:
+- GitHub Actions workflow: Selenium Tests
+- Checks: 2 passed
+- The CI runner installs Chrome on `ubuntu-latest` and successfully executes the Selenium test suite.
 
 ## 5. Notes
 
 - No application business logic was modified.
-- The healing focused on test infrastructure robustness under container constraints.
+- Page markup and fallback locators remain aligned with `app/index.html`.
+- The local failure is an environment prerequisite issue, not a UI locator or assertion failure.
