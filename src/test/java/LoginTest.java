@@ -13,9 +13,9 @@ public class LoginTest {
                 Paths.get("app/index.html")
         );
 
-assertTrue(
-    html.contains("submitBtn"),
-    "submitBtn not found"
-);
+        assertTrue(
+                html.contains("submitBtn"),
+                "submitBtn not found"
+        );
     }
 }
