@@ -7,7 +7,7 @@ public class DemoAppPage {
     private static final By HEADING = By.tagName("h1");
 
     private static final FallbackLocator SUBMIT_BUTTON = FallbackLocator.of(
-            By.id("submitBtn"),
+            By.id("saveBtn"),
             By.cssSelector("[data-testid='submit-button']"),
             By.xpath("//button[normalize-space()='Submit']")
     );
