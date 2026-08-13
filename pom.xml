@@ -14,6 +14,8 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test.tags.included></test.tags.included>
+        <test.tags.excluded>selenium</test.tags.excluded>
     </properties>
 
     <dependencies>
@@ -37,8 +39,22 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
+                <configuration>
+                    <groups>${test.tags.included}</groups>
+                    <excludedGroups>${test.tags.excluded}</excludedGroups>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>selenium</id>
+            <properties>
+                <test.tags.included>selenium</test.tags.included>
+                <test.tags.excluded></test.tags.excluded>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
