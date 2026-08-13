@@ -13,10 +13,6 @@ public class LoginTest {
                 Paths.get("app/index.html")
         );
 
-     boolean found =
-        html.contains("submitBtn")
-        || html.contains("saveBtn");
-
 assertTrue(
     html.contains("submitBtn"),
     "submitBtn not found"
