@@ -6,11 +6,7 @@ public class DemoAppPage {
 
     private static final By HEADING = By.tagName("h1");
 
-    private static final FallbackLocator SUBMIT_BUTTON = FallbackLocator.of(
-            By.id("saveBtn"),
-            By.cssSelector("[data-testid='submit-button']"),
-            By.xpath("//button[normalize-space()='Submit']")
-    );
+    private static final By SUBMIT_BUTTON = By.id("saveButtons");
 
     private final WebDriver driver;
 
@@ -44,6 +40,6 @@ public class DemoAppPage {
     }
 
     private WebElement getSubmitButton() {
-        return SUBMIT_BUTTON.find(driver);
+        return driver.findElement(SUBMIT_BUTTON);
     }
 }
