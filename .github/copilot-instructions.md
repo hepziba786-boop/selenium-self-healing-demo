@@ -43,6 +43,8 @@ List the FallbackLocator chain and which strategy successfully located the eleme
 
 **No duplication rule:** the Root Cause, Files Changed, Test Result, and Locator Strategy details must appear **exactly once** — in the PR comment above. Do not repeat them in the PR description, the PR title body, or any response text. The PR description may contain a one-line summary only.
 
+**Single chat output rule:** the full structured report must be shown **once and only once** in the chat. Do not re-display it as a follow-up message, a summary, or a confirmation after posting the PR comment.
+
 ---
 
 ## Locator Self-Healing Strategy (`FallbackLocator`)
