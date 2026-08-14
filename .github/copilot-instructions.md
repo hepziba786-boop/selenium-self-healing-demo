@@ -22,7 +22,7 @@ This agent automatically detects, diagnoses, and repairs broken Selenium tests c
 
 ## PR Comment Format
 
-Every pull request opened by this agent **must** include a comment in this exact structure:
+Every pull request opened by this agent **must** include a comment posted directly on the PR (using the PR comment tool, not only in the PR description) in this exact structure:
 
 ```
 ## 🔍 Root Cause
@@ -40,6 +40,8 @@ Tests run: X, Failures: 0, Errors: 0, Skipped: 0  ✅
 ## 📌 Locator Self-Healing Strategy
 List the FallbackLocator chain and which strategy successfully located the element.
 ```
+
+**No duplication rule:** the Root Cause, Files Changed, Test Result, and Locator Strategy details must appear **exactly once** — in the PR comment above. Do not repeat them in the PR description, the PR title body, or any response text. The PR description may contain a one-line summary only.
 
 ---
 
