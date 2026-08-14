@@ -38,7 +38,6 @@ For each failed test:
 ### 5. Generate Results
 
 Provide a summary including:
-
 * Total tests executed
 * Passed tests
 * Failed tests
@@ -47,27 +46,23 @@ Provide a summary including:
 
 ### 6. Healing Report
 
-Generate a report containing:
+Generate a Detailed Report containing:
 
 * Failed test details
+* If Nothing Failes Success Message
 * Root cause identified
 * Files modified
 * Code changes applied
 * Validation results
 
-### 7. Create Pull Request
+### 7. Create Pull Request in case of fix
 
 Automatically:
 
 * Create a branch for the fix
 * Commit the changes
-* Generate a Pull Request with:
+* Generate a Pull Request with the fix and details of the fix in the comment of pull request.
 
-  * Failure summary
-  * Root cause
-  * Fix applied
-  * Test results
-  * Healing report
 
 ## Goal
 
