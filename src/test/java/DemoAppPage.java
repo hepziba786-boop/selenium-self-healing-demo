@@ -10,7 +10,7 @@ public class DemoAppPage {
             By.id("Submit"),
             By.cssSelector("[data-testid='submit-button']"),
             By.cssSelector("button[type='button']"),
-            By.xpath("//button[normalize-space()='APPLY']")
+            By.xpath("//button[normalize-space()='ENTER']")
     );
 
     private final WebDriver driver;
