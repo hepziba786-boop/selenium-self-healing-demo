@@ -7,10 +7,10 @@ public class DemoAppPage {
     private static final By HEADING = By.tagName("h1");
 
     private static final FallbackLocator SUBMIT_BUTTON = FallbackLocator.of(
-            By.id("Submit"),
-            By.cssSelector("[data-testid='submit-button']"),
-            By.cssSelector("button[type='submit']"),
-            By.xpath("//button[normalize-space()='Submit']")
+            By.id("ADD"),
+            By.cssSelector("[data-testid='ADD-button']"),
+            By.cssSelector("button[type='button']"),
+            By.xpath("//button[normalize-space()='ADD']")
     );
 
     private final WebDriver driver;
