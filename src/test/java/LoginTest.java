@@ -14,7 +14,7 @@ public class LoginTest extends BaseUiTest {
                 () -> assertEquals("Demo App", page.getHeadingText()),
                 () -> assertTrue(page.isSubmitButtonDisplayed(), "submit button should be visible"),
                 () -> assertTrue(page.isSubmitButtonEnabled(), "submit button should be enabled"),
-                () -> assertEquals("ENTER", page.getSubmitButtonText())
+                () -> assertEquals("IMPORT", page.getSubmitButtonText())
         );
 
         page.clickSubmit();

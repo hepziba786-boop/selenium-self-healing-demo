@@ -61,7 +61,29 @@ Automatically:
 
 * Create a branch for the fix
 * Commit the changes
-* Generate a Pull Request with the fix and details of the fix in the comment of pull request.
+* Generate a Pull Request with a one-line summary in the PR description.
+* Post the full fix details as a **PR comment** (using the PR comment tool) in this exact structure:
+
+```
+## 🔍 Root Cause
+Plain-English explanation of what changed in the UI and why the test broke.
+Include the exact failure message from the test output.
+
+## 🔧 Files Changed
+| File | What changed | Why |
+|------|-------------|-----|
+| path/to/File.java | old value → new value | brief reason |
+
+## 🧪 Test Result After Fix
+Tests run: X, Failures: 0, Errors: 0, Skipped: 0  ✅
+
+## 📌 Locator Self-Healing Strategy
+List the FallbackLocator chain and which strategy successfully located the element.
+```
+
+**No duplication rule:** Root Cause, Files Changed, Test Result, and Locator Strategy must appear **exactly once** — in the PR comment above. Do not repeat them in the PR description, PR title, or any response text.
+
+**Single chat output rule:** the full structured report must be shown **once and only once** in the chat. Do not re-display it as a follow-up message, a summary, or a confirmation after posting the PR comment.
 
 
 ## Goal
