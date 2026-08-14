@@ -1,17 +1,17 @@
 # Intelligent Regression Testing - Healing Report
 
-Generated: 2026-08-13
+Generated: 2026-08-14
 Branch: main
 Toolchain: Maven + JUnit 5 + Selenium
 
 ## 1. Regression Suite Run
 
-Initial run failed.
+Initial run failed with a locator regression.
 
 Observed failure:
 - Test: `LoginTest#verifySubmitButtonThroughTheBrowser`
-- Error type: `SessionNotCreatedException`
-- Root symptom: Chrome process exited during WebDriver session startup
+- Error type: `NoSuchElementException`
+- Root symptom: `DemoAppPage` searched for the missing element `#saveButtons`
 
 ## 2. Investigation
 
@@ -21,20 +21,19 @@ Files inspected:
 - `src/test/java/BaseUiTest.java`
 
 Findings:
-- Page markup and page-object locators are aligned:
-  - Primary locator: `By.id("saveBtn")`
-  - Fallbacks: `data-testid` and text-based XPath
-- Selenium Manager had downloaded browser/driver assets under `~/.cache/selenium`.
-- Downloaded Chrome binary failed to launch due missing shared libraries in the container (example: `libatk-1.0.so.0`).
+- The current button markup is `<button id="SAVE" data-testid="submit-button">Submit</button>`.
+- The page object used the stale locator `By.id("saveButtons")`.
+- The failure affected the visibility, enabled-state, and text assertions in the test.
 
 ## 3. Healing Actions
 
 Project code updates:
-- None required.
+- Updated `src/test/java/DemoAppPage.java` to use the existing `FallbackLocator` utility.
+- Retained `By.id("saveButtons")` for backward compatibility.
+- Added current locators `By.id("SAVE")` and `By.cssSelector("[data-testid='submit-button']")`.
 
-Environment remediation performed:
-1. Installed required Linux runtime libraries for headless Chrome in the container.
-2. Re-ran the suite using the same test code and locators.
+Business logic changes:
+- None.
 
 ## 4. Validation
 
@@ -54,5 +53,5 @@ Result:
 ## 5. Notes
 
 - No application business logic was modified.
-- No Selenium locator/assertion changes were required for this run.
-- The failure was infrastructure-related (container runtime dependencies), not a UI regression.
+- The healed test verified the heading, button visibility, enabled state, text, click behavior, and focus.
+- Selenium emitted a CDP compatibility warning for Chrome 152; it did not affect test execution.
