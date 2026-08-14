@@ -21,4 +21,4 @@ jobs:
         with:
           chrome-version: stable
 
-      - run: mvn -B test
+      - run: mvn -B clean test
