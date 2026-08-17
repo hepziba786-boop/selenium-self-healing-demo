@@ -93,3 +93,17 @@ When a locator fails, update the broken strategy to match the current UI. Keep a
 - Every End-to-End Flow row must show explicit **PASSED ✅** or **FAILED ❌** status before and after the fix.
 - Always post the structured PR comment (format above) before closing the task.
 - Keep this file updated whenever agent behaviour or workflow changes.
+
+---
+
+## Automation Trigger Contract
+
+When this agent is invoked from an issue labeled `self-heal-selenium` that was created by repository automation:
+
+- Treat the issue body and linked failed workflow run as the trigger payload.
+- Investigate the linked GitHub Actions failure first, then run local validation as needed.
+- Prioritize failures caused by `app/index.html` changes and repair only the Selenium tests.
+- Open the repair PR and notify the triggering developer through the issue or linked pull request.
+- Preserve the full Before/After End-to-End Flow table with explicit **PASSED ✅** / **FAILED ❌** status for every test row.
+
+If the repository is public and Copilot automations cannot run automatically, treat the issue as a manual hand-off that still contains the required self-heal context.

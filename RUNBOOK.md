@@ -59,6 +59,27 @@ The following Selenium test failed in CI. Please diagnose and fix:
 
 ---
 
+## Automated Failure Intake
+
+This repository now includes `.github/workflows/self-heal-on-selenium-failure.yml`.
+
+What it does:
+- Watches for failed runs of the `Selenium Tests` workflow
+- Checks whether `app/index.html` was part of the failing change
+- Opens or updates a `self-heal-selenium` issue with the failed run link and agent instructions
+- Comments on the source pull request to notify the triggering developer when the failure came from a PR
+
+Important limitation:
+- This repository is currently **public**, and GitHub Copilot automations are only available for **private/internal** repositories.
+- That means the new workflow can automatically create the self-heal request and notify you, but it cannot auto-run Copilot in this repository today.
+- If you move the repository to private/internal and enable Copilot cloud agent automations, configure an automation in the GitHub **Agents** tab with:
+  - **Trigger:** when an issue is created
+  - **Filter:** label `self-heal-selenium`
+  - **Prompt:** follow `.github/copilot-instructions.md` and fix the Selenium failure from the linked workflow run
+  - **Tools:** create pull request, comment on issues / pull requests, push changes
+
+---
+
 ## What the Agent Will NOT Do
 
 - Modify `app/index.html` or any application source file
