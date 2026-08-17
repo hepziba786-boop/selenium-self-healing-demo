@@ -1,12 +1,436 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjectFlow – Login</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .logo svg { flex-shrink: 0; }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a202c;
+      letter-spacing: -0.5px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #718096;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #1a202c;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+    }
+
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 13px;
+      color: #4f46e5;
+      text-decoration: none;
+      margin-top: 4px;
+    }
+
+    .error-banner {
+      display: none;
+      background: #fff5f5;
+      border: 1.5px solid #fc8181;
+      border-radius: 8px;
+      color: #c53030;
+      font-size: 13px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+    }
+
+    .error-banner.visible { display: block; }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .btn-login:hover  { background: #4338ca; }
+    .btn-login:active { background: #3730a3; }
+
+    .divider {
+      text-align: center;
+      color: #a0aec0;
+      font-size: 13px;
+      margin: 22px 0;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+
+    .signup-prompt {
+      text-align: center;
+      font-size: 13px;
+      color: #718096;
+    }
+
+    .signup-prompt a {
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── Dashboard (hidden until successful login) ── */
+    #dashboard {
+      display: none;
+    }
+
+    #dashboard.visible {
+      display: block;
+    }
+
+    .dashboard-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    #dashboard-heading {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a202c;
+    }
+
+    .btn-logout {
+      padding: 8px 16px;
+      background: #e53e3e;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #f7fafc;
+      border-radius: 8px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat-card .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4f46e5;
+    }
+
+    .stat-card .stat-label {
+      font-size: 12px;
+      color: #718096;
+      margin-top: 4px;
+    }
+
+    .projects-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .projects-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: #edf2f7;
+      color: #4a5568;
+      font-weight: 600;
+    }
+
+    .projects-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #2d3748;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-active   { background: #c6f6d5; color: #22543d; }
+    .badge-review   { background: #fefcbf; color: #744210; }
+    .badge-planning { background: #bee3f8; color: #2a4365; }
+  </style>
+</head>
 <body>
 
-<h1>Demo App</h1>
+  <!-- ══════════════ LOGIN PANEL ══════════════ -->
+  <div id="login-panel">
+    <div class="card">
 
-<button id="Submit" data-testid="submit-button" type="button"> 
-    APPLY
-</button>
-  
+      <!-- Logo -->
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#4f46e5"/>
+          <path d="M8 22 L16 10 L24 22" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+          <path d="M11.5 17 H20.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">ProjectFlow</span>
+      </div>
+
+      <h1 id="page-heading">Sign in to your account</h1>
+      <p class="subtitle">Track projects, manage tasks, ship faster.</p>
+
+      <!-- Error banner -->
+      <div id="error-message" class="error-banner" data-testid="error-message" role="alert">
+        Invalid username or password. Please try again.
+      </div>
+
+      <!-- Form -->
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            data-testid="username-input"
+            placeholder="you@company.com"
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            data-testid="password-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <a href="#" class="forgot-link" id="forgot-password-link" data-testid="forgot-password-link">Forgot password?</a>
+        </div>
+
+        <button
+          type="button"
+          id="login-btn"
+          data-testid="login-button"
+          class="btn-login"
+        >Sign In</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <p class="signup-prompt">
+        Don't have an account?
+        <a href="#" id="signup-link" data-testid="signup-link">Create one free</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════ DASHBOARD PANEL ══════════════ -->
+  <div id="dashboard">
+    <div class="dashboard-card">
+
+      <div class="dashboard-header">
+        <h2 id="dashboard-heading" data-testid="dashboard-heading">Welcome back, Alice 👋</h2>
+        <button
+          type="button"
+          id="logout-btn"
+          data-testid="logout-button"
+          class="btn-logout"
+        >Exit</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" data-testid="stat-projects">12</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-testid="stat-tasks">47</div>
+          <div class="stat-label">Open Tasks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-testid="stat-members">8</div>
+          <div class="stat-label">Team Members</div>
+        </div>
+      </div>
+
+      <!-- Projects table -->
+      <table class="projects-table" data-testid="projects-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th>Due Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Alpha Redesign</td>
+            <td>Alice</td>
+            <td><span class="badge badge-active">Active</span></td>
+            <td>2026-09-01</td>
+          </tr>
+          <tr>
+            <td>API v3 Migration</td>
+            <td>Bob</td>
+            <td><span class="badge badge-review">In Review</span></td>
+            <td>2026-08-25</td>
+          </tr>
+          <tr>
+            <td>Mobile App Launch</td>
+            <td>Carol</td>
+            <td><span class="badge badge-planning">Planning</span></td>
+            <td>2026-10-15</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var VALID_USER = "admin";
+      var VALID_PASS = "secret123";
+
+      var loginBtn   = document.getElementById("login-btn");
+      var logoutBtn  = document.getElementById("logout-btn");
+      var errorMsg   = document.getElementById("error-message");
+      var loginPanel = document.getElementById("login-panel");
+      var dashboard  = document.getElementById("dashboard");
+
+      function showError() {
+        errorMsg.classList.add("visible");
+      }
+
+      function hideError() {
+        errorMsg.classList.remove("visible");
+      }
+
+      loginBtn.addEventListener("click", function () {
+        var user = document.getElementById("username").value.trim();
+        var pass = document.getElementById("password").value;
+
+        if (user === VALID_USER && pass === VALID_PASS) {
+          hideError();
+          loginPanel.style.display = "none";
+          dashboard.classList.add("visible");
+        } else {
+          showError();
+        }
+      });
+
+      logoutBtn.addEventListener("click", function () {
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+        hideError();
+        dashboard.classList.remove("visible");
+        loginPanel.style.display = "";
+      });
+    })();
+  </script>
+
 </body>
 </html>
