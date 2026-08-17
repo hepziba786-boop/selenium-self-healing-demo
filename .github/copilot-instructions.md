@@ -8,7 +8,7 @@ This agent automatically detects, diagnoses, and repairs broken Selenium tests c
 ## Workflow — When Tests Fail
 
 1. **Run the tests (BEFORE)** — execute `mvn test` and capture the full Surefire output.
-2. **Record BEFORE status** — for every test method, note whether it **PASSED ✅** or **FAILED ❌** along with the exact failure message and line number.
+2. **Record BEFORE status** — for every test method and every row in the end-to-end flow table, note whether it **PASSED ✅** or **FAILED ❌** along with the exact failure message and line number.
 3. **Read the failure** — identify the exact assertion or locator that broke (error message, file, line number).
 4. **Compare UI source with test code** — open `app/index.html` (or the target URL) and compare element IDs, text, attributes against locators in `DemoAppPage.java` and assertions in `LoginTest.java`.
 5. **Repair (never rewrite business logic)**:
@@ -16,7 +16,7 @@ This agent automatically detects, diagnoses, and repairs broken Selenium tests c
    - Update stale assertion values (button text, heading text, etc.) to match the current UI.
    - Do NOT modify `app/index.html` or any application source.
 6. **Re-run tests (AFTER)** — run `mvn test` again. Only proceed when all tests pass (0 failures, 0 errors).
-7. **Record AFTER status** — for every test method, note the new result **PASSED ✅** or **FAILED ❌**.
+7. **Record AFTER status** — for every test method and every row in the end-to-end flow table, note the new result **PASSED ✅** or **FAILED ❌**.
 8. **Post a detailed PR comment** using the format below (which must include the full end-to-end flow table).
 9. **Open a pull request** with a clear title and description summarising the self-healing fix.
 
@@ -51,6 +51,7 @@ Include the exact failure message from the test output.
 > Replace the example values above with the **actual** before/after results from each `mvn test` run.
 > Every test must appear in the table — including those that were already passing.
 > The "Failure Detail" column must contain the exact assertion or exception message for any FAILED row, or "—" for rows that passed.
+> Show the full flow for all test rows with explicit **PASSED ✅** or **FAILED ❌** status in both the Before Fix and After Fix columns; do not summarize or collapse any row.
 
 ## 🧪 Summary
 Tests run: X, Failures: 0, Errors: 0, Skipped: 0  ✅
@@ -89,5 +90,6 @@ When a locator fails, update the broken strategy to match the current UI. Keep a
 - Always run `mvn test` **before** making any change and record each test's BEFORE status.
 - Always run `mvn test` **after** every fix; stop only when all tests pass (0 failures, 0 errors) and record each test's AFTER status.
 - Every test method must appear in the End-to-End Flow table — including tests that were already passing.
+- Every End-to-End Flow row must show explicit **PASSED ✅** or **FAILED ❌** status before and after the fix.
 - Always post the structured PR comment (format above) before closing the task.
 - Keep this file updated whenever agent behaviour or workflow changes.

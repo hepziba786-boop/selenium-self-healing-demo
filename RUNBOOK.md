@@ -25,11 +25,11 @@ Open Copilot Chat and use the `@workspace` command with the agent name:
 ```
 
 The agent will:
-1. Run `mvn test` **before** any change and record each test's pass/fail status
+1. Run `mvn test` **before** any change and record each test's explicit **PASSED ✅** / **FAILED ❌** status
 2. Compare the UI source against Selenium locators and assertions
 3. Repair only the broken selectors / expected values
-4. Re-run `mvn test` **after** the fix and record each test's pass/fail status
-5. Open a PR with a structured comment that includes a full **End-to-End Before & After table** showing every test's status before and after the fix
+4. Re-run `mvn test` **after** the fix and record each test's explicit **PASSED ✅** / **FAILED ❌** status
+5. Open a PR with a structured comment that includes a full **End-to-End Before & After table** showing every test row with before/after pass-fail status and failure details where applicable
 
 ---
 
@@ -65,6 +65,7 @@ The following Selenium test failed in CI. Please diagnose and fix:
 - Change business logic in test classes
 - Skip the `mvn test` verification step (before **and** after the fix)
 - Omit any test from the End-to-End Before & After flow table
+- Omit explicit **PASSED ✅** / **FAILED ❌** status from any Before/After flow row
 - Open a PR without posting the structured diagnostic comment including the flow table
 
 ---
