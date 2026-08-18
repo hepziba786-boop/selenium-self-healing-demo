@@ -14,6 +14,7 @@ public abstract class BaseUiTest {
 
     @BeforeEach
     void setUpDriver() {
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
