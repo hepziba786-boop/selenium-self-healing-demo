@@ -78,23 +78,6 @@ Plain-English explanation of what changed in the UI and why the Selenium test fa
 - Errors: 0
 - Skipped: 0
 
-## 📌 Locator Self-Healing Strategy
-List the locator fallback order used and identify which locator succeeded after the repair.
-
----
-
-## Locator Self-Healing Strategy (`FallbackLocator`)
-
-The `FallbackLocator` class should try strategies in this order:
-
-1. `By.id("...")`
-2. `By.cssSelector("[data-testid='...']")`
-3. `By.cssSelector("tag[attr='value']")`
-4. `By.xpath("//tag[normalize-space()='text']")`
-
-When a locator fails, update the broken locator so it matches the current UI while keeping the fallback order stable and consistent.
-
----
 
 ## Expected Agent Behaviour
 
@@ -105,5 +88,6 @@ When Selenium-related build failures happen, the agent should:
 - fix the issue in the Selenium test code,
 - explain the root cause,
 - and provide a complete before/after report with pass/fail results and totals.
+- Create PR with above explaination in the PR comment.
 
 The goal is repair and reporting, not failure simulation.
