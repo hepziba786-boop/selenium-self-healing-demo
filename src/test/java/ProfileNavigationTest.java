@@ -6,60 +6,65 @@ import static org.junit.jupiter.api.Assertions.*;
  * End-to-end flow test written in the style of a manual test case.
  *
  * Each step follows the pattern:
- *   Step N | Action Performed | Expected Output | Assertion (PASS/FAIL will be
- *   reported by JUnit)
+ *   Step N | Action Performed | Expected Output | Assertion (PASS/FAIL reported by JUnit)
  *
- * Scenario under test
- * -------------------
- * 1. Attempt login with incorrect credentials  → error banner appears
- * 2. Login with correct credentials            → dashboard is shown (success)
- * 3. Click "My Profile" link on the dashboard  → browser navigates to a WRONG /
- *    stale URL (regression bug: link points to the old profile path)
- *
- * The final step is expected to FAIL (the test asserts the CORRECT url and
- * receives the stale one), demonstrating how Selenium catches a broken
- * navigation link introduced by an HTML change.
+ * Scenario
+ * --------
+ * 1.  Open login page                           → form elements visible
+ * 2.  Login with incorrect credentials          → error banner shown
+ * 3.  Verify error banner text                  → contains "Invalid"
+ * 4.  Login with correct credentials            → dashboard appears
+ * 5.  Verify dashboard heading                  → contains "Welcome"
+ * 6.  Verify "My Profile" link is visible       → link displayed
+ * 7.  Assert profile link href (regression)     → FAILS: stale href "/my-profile-page"
+ *                                                  instead of expected "/user/profile"
+ * 8.  Click "My Profile" → verify profile page → heading "My Profile" visible
+ * 9.  Click "Log Out" on profile page           → login panel shown; profile hidden
  */
 public class ProfileNavigationTest extends BaseUiTest {
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // TEST A  –  Steps 1-7: full login flow + broken-link regression detection
+    // ─────────────────────────────────────────────────────────────────────────
+
     /**
-     * Full login-to-profile flow.
+     * Steps 1–7: Performs the full login flow (invalid → valid) and then
+     * checks whether the "My Profile" link points to the correct URL.
      *
      * Step | Action Performed                              | Expected Output
-     * -----+----------------------------------------------+-------------------------------
-     *  1   | Open the application login page              | Login form is displayed
-     *  2   | Enter incorrect username and password        | Error banner becomes visible
-     *  3   | Verify error banner text                     | Text contains "Invalid"
-     *  4   | Clear fields; enter valid credentials        | No error; dashboard appears
-     *  5   | Verify dashboard heading                     | Heading contains "Welcome"
-     *  6   | Click "My Profile" link                      | Browser navigates away from page
-     *  7   | Compare navigated URL with expected profile  | URL ends with "/user/profile"
-     *                                                       (FAILS: actual is "/my-profile-page"
-     *                                                       → broken link bug detected)
+     * -----+----------------------------------------------+---------------------------------
+     *  1   | Open the application login page              | Login form visible
+     *  2   | Enter incorrect credentials & click Sign In  | Error banner shown; no dashboard
+     *  3   | Read error banner text                       | Contains "Invalid"
+     *  4   | Enter correct credentials & click Sign In    | Dashboard visible; no error
+     *  5   | Read dashboard heading                       | Contains "Welcome"
+     *  6   | Locate "My Profile" link                     | Link is displayed
+     *  7   | Assert href ends with "/user/profile"        | FAIL — href is "/my-profile-page"
+     *                                                       (broken link detected)
      */
     @Test
-    void loginErrorThenSuccessAndProfileNavigatesToWrongPage() {
+    void profileLinkHrefIsStale() {
 
         DemoAppPage page = openDemoApp();
 
         // ── Step 1: Open login page ───────────────────────────────────────────
         // Action   : Navigate to app/index.html
-        // Expected : Username input, password input, and Sign In button are visible
-        assertTrue(page.isUsernameInputDisplayed(),  "Step 1 – username field is visible");
-        assertTrue(page.isPasswordInputDisplayed(),  "Step 1 – password field is visible");
-        assertTrue(page.isLoginButtonDisplayed(),    "Step 1 – Sign In button is visible");
+        // Expected : Username input, password input, and Sign In button visible
+        assertTrue(page.isUsernameInputDisplayed(), "Step 1 – username field is visible");
+        assertTrue(page.isPasswordInputDisplayed(), "Step 1 – password field is visible");
+        assertTrue(page.isLoginButtonDisplayed(),   "Step 1 – Sign In button is visible");
 
         // ── Step 2: Enter incorrect credentials ──────────────────────────────
         // Action   : Type "wronguser" / "wrongpass" and click Sign In
         // Expected : Error banner becomes visible; dashboard remains hidden
         page.loginWith("wronguser", "wrongpass");
 
-        assertTrue(page.isErrorMessageVisible(),  "Step 2 – error banner is shown for bad credentials");
-        assertFalse(page.isDashboardVisible(),    "Step 2 – dashboard is NOT shown");
+        assertTrue(page.isErrorMessageVisible(), "Step 2 – error banner shown for bad credentials");
+        assertFalse(page.isDashboardVisible(),   "Step 2 – dashboard NOT shown");
 
-        // ── Step 3: Verify the error banner message ───────────────────────────
+        // ── Step 3: Verify error banner message ───────────────────────────────
         // Action   : Read the text of the error banner
-        // Expected : Message contains the word "Invalid"
+        // Expected : Message contains "Invalid"
         assertTrue(
                 page.getErrorMessageText().contains("Invalid"),
                 "Step 3 – error text mentions 'Invalid'"
@@ -67,12 +72,12 @@ public class ProfileNavigationTest extends BaseUiTest {
 
         // ── Step 4: Enter correct credentials ────────────────────────────────
         // Action   : Type "admin" / "secret123" and click Sign In
-        // Expected : Login panel hides; dashboard becomes visible; no error banner
+        // Expected : Dashboard visible; login panel hidden; no error banner
         page.loginWith("admin", "secret123");
 
-        assertTrue(page.isDashboardVisible(),         "Step 4 – dashboard is visible after successful login");
-        assertFalse(page.isLoginPanelVisible(),        "Step 4 – login panel is hidden");
-        assertFalse(page.isErrorMessageVisible(),      "Step 4 – error banner is NOT shown on success");
+        assertTrue(page.isDashboardVisible(),    "Step 4 – dashboard visible after login");
+        assertFalse(page.isLoginPanelVisible(),  "Step 4 – login panel hidden");
+        assertFalse(page.isErrorMessageVisible(),"Step 4 – error banner absent on success");
 
         // ── Step 5: Verify dashboard welcome message ──────────────────────────
         // Action   : Read the dashboard heading text
@@ -82,27 +87,88 @@ public class ProfileNavigationTest extends BaseUiTest {
                 "Step 5 – dashboard heading contains 'Welcome'"
         );
 
-        // ── Step 6: Verify "My Profile" link is present on dashboard ─────────
+        // ── Step 6: Verify "My Profile" link is present ───────────────────────
         // Action   : Locate the My Profile link
         // Expected : Link is displayed
-        assertTrue(page.isMyProfileLinkDisplayed(), "Step 6 – My Profile link is visible on dashboard");
+        assertTrue(page.isMyProfileLinkDisplayed(), "Step 6 – My Profile link visible on dashboard");
 
-        // ── Step 7: Click "My Profile" and verify destination URL ─────────────
-        // Action   : Click the My Profile link
-        // Expected : Browser navigates to "/user/profile"  ← CORRECT (new) path
-        // Actual   : Browser navigates to "/my-profile-page"  ← stale/broken path
-        // Result   : FAIL – regression bug detected (link not updated in HTML)
-        String hrefBefore = page.getMyProfileLinkHref();
-
-        // The link href must point to the current profile path "/user/profile".
-        // The HTML still has the OLD value "/my-profile-page", so this assertion
-        // will FAIL, exposing the broken navigation link.
+        // ── Step 7: Assert the profile link href ─────────────────────────────
+        // Action   : Read href attribute of the My Profile link
+        // Expected : Ends with "/user/profile" (the correct, current URL)
+        // Actual   : Ends with "/my-profile-page" (stale/broken URL)
+        // Result   : FAIL – regression bug: HTML was not updated after URL change
+        String href = page.getMyProfileLinkHref();
         assertTrue(
-                hrefBefore.endsWith("/user/profile"),
-                "Step 7 – EXPECTED: My Profile link href ends with '/user/profile' "
-                        + "(the correct, updated URL)\n"
-                        + "         ACTUAL  : href = '" + hrefBefore + "'\n"
-                        + "         RESULT  : FAIL – navigation link is stale/broken"
+                href.endsWith("/user/profile"),
+                "Step 7 – EXPECTED: href ends with '/user/profile'\n"
+                        + "         ACTUAL  : href = '" + href + "'\n"
+                        + "         RESULT  : FAIL – navigation link is stale/broken.\n"
+                        + "         FIX     : In app/index.html change\n"
+                        + "                     href=\"/my-profile-page\"\n"
+                        + "                   to\n"
+                        + "                     href=\"/user/profile\""
+        );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // TEST B  –  Steps 8-9: profile page content + logout
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Steps 8–9: After a successful login, click "My Profile", verify the
+     * profile page content, then log out and confirm the login page is restored.
+     *
+     * Step | Action Performed                              | Expected Output
+     * -----+----------------------------------------------+-------------------------------
+     *  8   | Click "My Profile" link                      | Profile page panel becomes visible;
+     *       |                                              | heading reads "My Profile"
+     *  9   | Click "Log Out" on the profile page          | Profile page hidden;
+     *       |                                              | login form visible again
+     */
+    @Test
+    void profilePageVerificationAndLogout() {
+
+        DemoAppPage page = openDemoApp();
+
+        // Pre-condition: successful login to reach the dashboard
+        page.loginWith("admin", "secret123");
+        assertTrue(page.isDashboardVisible(), "Pre-condition – dashboard visible after login");
+
+        // ── Step 8: Click "My Profile" and verify profile page content ────────
+        // Action   : Click the My Profile link on the dashboard
+        // Expected : Profile page panel becomes visible; heading reads "My Profile"
+        page.clickMyProfileLink();
+
+        assertTrue(
+                page.isProfilePageVisible(),
+                "Step 8 – profile page panel is visible after clicking My Profile"
+        );
+        assertEquals(
+                "My Profile",
+                page.getProfileHeadingText(),
+                "Step 8 – profile page heading reads 'My Profile'"
+        );
+        assertFalse(
+                page.isDashboardVisible(),
+                "Step 8 – dashboard panel is hidden while profile page is shown"
+        );
+
+        // ── Step 9: Click "Log Out" from the profile page ─────────────────────
+        // Action   : Click the Log Out button on the profile page
+        // Expected : Profile page hidden; login form visible again
+        page.clickLogoutFromProfile();
+
+        assertTrue(
+                page.isLoginPanelVisible(),
+                "Step 9 – login panel is visible after logging out from profile page"
+        );
+        assertFalse(
+                page.isProfilePageVisible(),
+                "Step 9 – profile page is hidden after logout"
+        );
+        assertFalse(
+                page.isDashboardVisible(),
+                "Step 9 – dashboard is hidden after logout"
         );
     }
 }

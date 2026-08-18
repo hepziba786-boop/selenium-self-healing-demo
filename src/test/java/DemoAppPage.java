@@ -78,6 +78,20 @@ public class DemoAppPage {
             By.xpath("//a[normalize-space()='My Profile']")
     );
 
+    private static final FallbackLocator PROFILE_HEADING = FallbackLocator.of(
+            By.id("profile-heading"),
+            By.cssSelector("[data-testid='profile-heading']"),
+            By.cssSelector("#profile-page h2"),
+            By.xpath("//h2[normalize-space()='My Profile']")
+    );
+
+    private static final FallbackLocator PROFILE_LOGOUT_BUTTON = FallbackLocator.of(
+            By.id("profile-logout-btn"),
+            By.cssSelector("[data-testid='profile-logout-button']"),
+            By.cssSelector("#profile-page button.btn-logout"),
+            By.xpath("//div[@id='profile-page']//button[normalize-space()='Log Out']")
+    );
+
     private static final FallbackLocator PROJECTS_TABLE = FallbackLocator.of(
             By.cssSelector("[data-testid='projects-table']"),
             By.cssSelector("table.projects-table"),
@@ -192,6 +206,19 @@ public class DemoAppPage {
 
     public String getCurrentUrl() {
         return driver.getCurrentUrl();
+    }
+
+    public boolean isProfilePageVisible() {
+        WebElement el = driver.findElement(By.id("profile-page"));
+        return el.getAttribute("class").contains("visible");
+    }
+
+    public String getProfileHeadingText() {
+        return PROFILE_HEADING.find(driver).getText();
+    }
+
+    public void clickLogoutFromProfile() {
+        PROFILE_LOGOUT_BUTTON.find(driver).click();
     }
 
     public void clickLogout() {

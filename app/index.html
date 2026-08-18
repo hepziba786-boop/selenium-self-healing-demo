@@ -255,6 +255,35 @@
     .badge-active   { background: #c6f6d5; color: #22543d; }
     .badge-review   { background: #fefcbf; color: #744210; }
     .badge-planning { background: #bee3f8; color: #2a4365; }
+
+    /* ── Profile Page (hidden until My Profile is clicked) ── */
+    #profile-page { display: none; }
+    #profile-page.visible { display: block; }
+
+    .profile-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    #profile-heading {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a202c;
+    }
+
+    .profile-info { font-size: 14px; color: #4a5568; margin-bottom: 10px; }
+    .profile-info span { font-weight: 600; color: #1a202c; }
   </style>
 </head>
 <body>
@@ -398,29 +427,54 @@
     </div>
   </div>
 
+  <!-- ══════════════ PROFILE PAGE PANEL ══════════════ -->
+  <div id="profile-page">
+    <div class="profile-card">
+      <div class="profile-header">
+        <h2 id="profile-heading" data-testid="profile-heading">My Profile</h2>
+        <button
+          type="button"
+          id="profile-logout-btn"
+          data-testid="profile-logout-button"
+          class="btn-logout"
+        >Log Out</button>
+      </div>
+      <p class="profile-info">Full Name: <span data-testid="profile-name">Alice Johnson</span></p>
+      <p class="profile-info">Username: <span data-testid="profile-username">admin</span></p>
+      <p class="profile-info">Email: <span data-testid="profile-email">alice@projectflow.io</span></p>
+      <p class="profile-info">Role: <span data-testid="profile-role">Project Manager</span></p>
+    </div>
+  </div>
+
   <script>
     (function () {
       var VALID_USER = "admin";
       var VALID_PASS = "secret123";
 
-      var loginBtn   = document.getElementById("login-btn");
-      var logoutBtn  = document.getElementById("logout-btn");
-      var errorMsg   = document.getElementById("error-message");
-      var loginPanel = document.getElementById("login-panel");
-      var dashboard  = document.getElementById("dashboard");
+      var loginBtn        = document.getElementById("login-btn");
+      var logoutBtn       = document.getElementById("logout-btn");
+      var profileLogoutBtn= document.getElementById("profile-logout-btn");
+      var myProfileLink   = document.getElementById("my-profile-link");
+      var errorMsg        = document.getElementById("error-message");
+      var loginPanel      = document.getElementById("login-panel");
+      var dashboard       = document.getElementById("dashboard");
+      var profilePage     = document.getElementById("profile-page");
 
-      function showError() {
-        errorMsg.classList.add("visible");
-      }
+      function showError() { errorMsg.classList.add("visible"); }
+      function hideError() { errorMsg.classList.remove("visible"); }
 
-      function hideError() {
-        errorMsg.classList.remove("visible");
+      function doLogout() {
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+        hideError();
+        dashboard.classList.remove("visible");
+        profilePage.classList.remove("visible");
+        loginPanel.style.display = "";
       }
 
       loginBtn.addEventListener("click", function () {
         var user = document.getElementById("username").value.trim();
         var pass = document.getElementById("password").value;
-
         if (user === VALID_USER && pass === VALID_PASS) {
           hideError();
           loginPanel.style.display = "none";
@@ -430,12 +484,13 @@
         }
       });
 
-      logoutBtn.addEventListener("click", function () {
-        document.getElementById("username").value = "";
-        document.getElementById("password").value = "";
-        hideError();
+      logoutBtn.addEventListener("click", doLogout);
+      profileLogoutBtn.addEventListener("click", doLogout);
+
+      myProfileLink.addEventListener("click", function (e) {
+        e.preventDefault();
         dashboard.classList.remove("visible");
-        loginPanel.style.display = "";
+        profilePage.classList.add("visible");
       });
     })();
   </script>
