@@ -71,6 +71,13 @@ public class DemoAppPage {
             By.xpath("//button[normalize-space()='Log out']")
     );
 
+    private static final FallbackLocator MY_PROFILE_LINK = FallbackLocator.of(
+            By.id("my-profile-link"),
+            By.cssSelector("[data-testid='my-profile-link']"),
+            By.cssSelector("a#my-profile-link"),
+            By.xpath("//a[normalize-space()='My Profile']")
+    );
+
     private static final FallbackLocator PROJECTS_TABLE = FallbackLocator.of(
             By.cssSelector("[data-testid='projects-table']"),
             By.cssSelector("table.projects-table"),
@@ -169,6 +176,22 @@ public class DemoAppPage {
 
     public boolean isProjectsTableDisplayed() {
         return PROJECTS_TABLE.find(driver).isDisplayed();
+    }
+
+    public void clickMyProfileLink() {
+        MY_PROFILE_LINK.find(driver).click();
+    }
+
+    public String getMyProfileLinkHref() {
+        return MY_PROFILE_LINK.find(driver).getAttribute("href");
+    }
+
+    public boolean isMyProfileLinkDisplayed() {
+        return MY_PROFILE_LINK.find(driver).isDisplayed();
+    }
+
+    public String getCurrentUrl() {
+        return driver.getCurrentUrl();
     }
 
     public void clickLogout() {
