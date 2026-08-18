@@ -39,7 +39,7 @@ public class ProfileNavigationTest extends BaseUiTest {
      *  4   | Enter correct credentials & click Sign In    | Dashboard visible; no error
      *  5   | Read dashboard heading                       | Contains "Welcome"
      *  6   | Locate "My Profile" link                     | Link is displayed
-     *  7   | Assert href ends with "/user/profile"        | FAIL — href is "/my-profile-page"
+     *  7   | Assert href ends with "/my-profile"          | PASS — href is "/my-profile"
      *                                                       (broken link detected)
      */
     @Test
@@ -94,22 +94,22 @@ public class ProfileNavigationTest extends BaseUiTest {
 
         // ── Step 7: Assert the profile link href ─────────────────────────────
         // Action   : Read href attribute of the My Profile link
-        // Expected : Ends with "/my-profile-page" (the current UI URL)
-        // Result   : PASS when href="/my-profile-page" in app/index.html
+        // Expected : Ends with "/my-profile" (the current UI URL)
+        // Result   : PASS when href="/my-profile" in app/index.html
         //
         // ⚠ TO TRIGGER THIS FAILURE (self-heal demo):
-        //   In app/index.html change  href="/my-profile-page"
+        //   In app/index.html change  href="/my-profile"
         //                         to  href="/user/profile"
         //   The test will then FAIL at this assertion, and the agent should
         //   update this assertion (or the href) to repair the suite.
         String href = page.getMyProfileLinkHref();
         assertTrue(
-                href.endsWith("/my-profile-page"),
-                "Step 7 – EXPECTED: href ends with '/my-profile-page'\n"
+                href.endsWith("/my-profile"),
+                "Step 7 – EXPECTED: href ends with '/my-profile'\n"
                         + "         ACTUAL  : href = '" + href + "'\n"
                         + "         RESULT  : FAIL – navigation link is stale/broken.\n"
                         + "         FIX     : Update stale test expectation to match the current UI href\n"
-                        + "                     '/my-profile-page'"
+                        + "                     '/my-profile'"
         );
     }
 
