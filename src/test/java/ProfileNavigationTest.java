@@ -39,7 +39,7 @@ public class ProfileNavigationTest extends BaseUiTest {
      *  4   | Enter correct credentials & click Sign In    | Dashboard visible; no error
      *  5   | Read dashboard heading                       | Contains "Welcome"
      *  6   | Locate "My Profile" link                     | Link is displayed
-     *  7   | Assert href ends with "/my-profile%20page"   | PASS — resolved href matches
+     *  7   | Assert href ends with "/my-profile%20data"   | PASS — resolved href matches
      *                                                       the current UI target
      */
     @Test
@@ -94,20 +94,20 @@ public class ProfileNavigationTest extends BaseUiTest {
 
         // ── Step 7: Assert the profile link href ─────────────────────────────
         // Action   : Read href attribute of the My Profile link
-        // Expected : Ends with "/my-profile%20page" once the browser resolves
-        //            the current UI href="/my-profile page"
+        // Expected : Ends with "/my-profile%20data" once the browser resolves
+        //            the current UI href="/my-profile data"
         //
         // ⚠ TO TRIGGER THIS FAILURE (self-heal demo):
         //   Change the current UI href in app/index.html and this assertion
         //   will fail until the Selenium expectation is updated to match it.
         String href = page.getMyProfileLinkHref();
         assertTrue(
-                href.endsWith("/my-profile%20page"),
-                "Step 7 – EXPECTED: href ends with '/my-profile%20page'\n"
+                href.endsWith("/my-profile%20data"),
+                "Step 7 – EXPECTED: href ends with '/my-profile%20data'\n"
                         + "         ACTUAL  : href = '" + href + "'\n"
                         + "         RESULT  : FAIL – navigation link expectation is stale.\n"
                         + "         FIX     : Update stale test expectation to match the current UI href\n"
-                        + "                     '/my-profile%20page'"
+                        + "                     '/my-profile%20data'"
         );
     }
 
