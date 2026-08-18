@@ -13,7 +13,7 @@ public class LoginTest extends BaseUiTest {
         DemoAppPage page = openDemoApp();
 
         assertAll("login page initial state",
-                () -> assertEquals("Sign in to your account", page.getPageHeadingText(), "page heading"),
+                () -> assertEquals("Log in to your account", page.getPageHeadingText(), "page heading"),
                 () -> assertTrue(page.isUsernameInputDisplayed(),    "username input visible"),
                 () -> assertTrue(page.isPasswordInputDisplayed(),    "password input visible"),
                 () -> assertTrue(page.isLoginButtonDisplayed(),      "login button visible"),
