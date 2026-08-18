@@ -95,8 +95,13 @@ public class ProfileNavigationTest extends BaseUiTest {
         // ── Step 7: Assert the profile link href ─────────────────────────────
         // Action   : Read href attribute of the My Profile link
         // Expected : Ends with "/user/profile" (the correct, current URL)
-        // Actual   : Ends with "/my-profile-page" (stale/broken URL)
-        // Result   : FAIL – regression bug: HTML was not updated after URL change
+        // Result   : PASS when href="/user/profile" in app/index.html
+        //
+        // ⚠ TO TRIGGER THIS FAILURE (self-heal demo):
+        //   In app/index.html change  href="/user/profile"
+        //                         to  href="/my-profile-page"
+        //   The test will then FAIL at this assertion, and the agent should
+        //   update this assertion (or the href) to repair the suite.
         String href = page.getMyProfileLinkHref();
         assertTrue(
                 href.endsWith("/user/profile"),
