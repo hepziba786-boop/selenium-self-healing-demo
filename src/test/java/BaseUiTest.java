@@ -1,3 +1,4 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +15,9 @@ public abstract class BaseUiTest {
 
     @BeforeEach
     void setUpDriver() {
-        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+        // Use WebDriverManager for automatic ChromeDriver setup
+        WebDriverManager.chromedriver().setup();
+        
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
