@@ -1,10 +1,12 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(SelfHealingExtension.class)
 public class LoginTest extends BaseUiTest {
 
     // ── 1. Login page loads with all expected elements ───────────────────────

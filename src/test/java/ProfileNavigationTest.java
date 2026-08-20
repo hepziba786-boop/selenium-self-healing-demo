@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 8.  Click "My Profile" → verify profile page → heading "My Profile" visible
  * 9.  Click "Log Out" on profile page           → login panel shown; profile hidden
  */
+@ExtendWith(SelfHealingExtension.class)
 public class ProfileNavigationTest extends BaseUiTest {
 
     // ─────────────────────────────────────────────────────────────────────────
