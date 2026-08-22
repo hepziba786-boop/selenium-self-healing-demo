@@ -68,7 +68,7 @@ public class DemoAppPage {
             By.id("logout-btn"),
             By.cssSelector("[data-testid='logout-button']"),
             By.cssSelector("button.btn-logout"),
-            By.xpath("//button[normalize-space()='Log out']")
+            By.xpath("//button[normalize-space()='Exit']")
     );
 
     private static final FallbackLocator MY_PROFILE_LINK = FallbackLocator.of(

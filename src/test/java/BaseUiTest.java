@@ -15,8 +15,14 @@ public abstract class BaseUiTest {
 
     @BeforeEach
     void setUpDriver() {
-        // Use WebDriverManager for automatic ChromeDriver setup
-        WebDriverManager.chromedriver().setup();
+        // Use WebDriverManager; if offline, fall back to the system-installed chromedriver
+        try {
+            WebDriverManager.chromedriver().setup();
+        } catch (Exception e) {
+            // Sandbox has no internet access – rely on chromedriver already on PATH
+            System.setProperty("webdriver.chrome.driver",
+                    java.nio.file.Paths.get("/usr/bin/chromedriver").toString());
+        }
         
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");

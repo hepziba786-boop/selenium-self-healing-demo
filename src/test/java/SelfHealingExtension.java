@@ -156,7 +156,7 @@ public class SelfHealingExtension implements BeforeTestExecutionCallback, TestWa
 
         List<TestRecord> classRecords = new ArrayList<>();
         for (TestRecord r : records.values()) {
-            if (r.className.equals(className)) {
+            if (className.equals(r.className)) {
                 classRecords.add(r);
             }
         }
