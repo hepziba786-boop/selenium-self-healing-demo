@@ -104,12 +104,12 @@ public class ProfileNavigationTest extends BaseUiTest {
         //   will fail until the Selenium expectation is updated to match it.
         String href = page.getMyProfileLinkHref();
         assertTrue(
-                href.endsWith("/my-profile%20page"),
-                "Step 7 – EXPECTED: href ends with '/my-profile%20page'\n"
+                href.endsWith("/my-profile%20list"),
+                "Step 7 – EXPECTED: href ends with '/my-profile%20list'\n"
                         + "         ACTUAL  : href = '" + href + "'\n"
                         + "         RESULT  : FAIL – navigation link expectation is stale.\n"
-                        + "         FIX     : Update stale test expectation to match the current UI href\n"
-                        + "                     '/my-profile%20page'"
+                        + "         FIX     : Updated test expectation to match the current UI href\n"
+                        + "                     '/my-profile%20list'"
         );
     }
 
